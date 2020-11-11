@@ -1,0 +1,69 @@
+import pymysql
+
+class DateBase:
+    def showAllUser(self):    #查询全部数据
+        try:
+            conn = pymysql.connect(
+                host="127.0.0.1",
+                port=3306,
+                db="test",
+                user="root",
+                password="ROOT",
+                charset="utf8"
+            )
+            cs = conn.cursor()    #与数据库进行连接，并创建游标
+            cs.execute("select * from myuser")    #查询全部数据
+            result = cs.fetchall()
+            print("#" * 12)
+            print(result)
+            print(result[1][1])
+            return result
+        except Exception as e:
+            print(e)
+        finally:
+            if conn != None:
+                conn.close()
+
+    def addDate(self,args):    #向数据库中添加数据
+        conn = pymysql.connect(
+            host="127.0.0.1",
+            port=3306,
+            db="test",
+            user="root",
+            password="ROOT",
+            charset="utf8"
+        )
+        cs = conn.cursor()  # 与数据库进行连接，并创建游标
+        cs.execute("insert into mytable values(%s,%s,%s,%s)",args)    #通过args传入工号、姓名、打卡时间和是否迟到等数据，args可以是一个列表或者元祖
+        conn.commit()
+
+    def deleteDate(self,id):    #删除数据
+        try:
+            conn = pymysql.connect(
+                host="127.0.0.1",
+                port=3306,
+                db="test",
+                user="root",
+                password="ROOT",
+                charset="utf8"
+            )
+            cs = conn.cursor()  # 与数据库进行连接，并创建游标
+            cs.execute("select * from mytable where id = %s", [id])  # 通过id号来删除数据
+            conn.commit()
+        except Exception as e:
+            print(e)
+        finally:
+            if conn != None:
+                conn.close()
+
+    def modification(self,late,id):    #修改数据库，修改迟到判定结果
+        conn = pymysql.connect(
+            host="127.0.0.1",
+            port=3306,
+            db="test",
+            user="root",
+            password="ROOT",
+            charset="utf8"
+        )
+        cs = conn.cursor()  # 与数据库进行连接，并创建游标
+        cs.execute("update mytable set late = %s where id = %s",late,id)    #通过late参数修改数据库内容，通过id号定位
